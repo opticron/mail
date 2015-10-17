@@ -138,7 +138,7 @@ class Pop3
 
 	Pop3Reply dele(ulong id)
 	{
-		return query("DELE " ~ id.to!string, true);
+		return query("DELE " ~ id.to!string);
 	}
 
 	Pop3Reply quit()
