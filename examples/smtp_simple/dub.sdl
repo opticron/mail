@@ -1,0 +1,7 @@
+name        "smtp_simple"
+description "Simple SMTP Example"
+copyright   "Copyright © 2015, Anton Dutov"
+authors     "Anton Dutov"
+
+dependency "mail" version="~master" path="../../"
+

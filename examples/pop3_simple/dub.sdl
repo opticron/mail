@@ -1,0 +1,7 @@
+name        "pop3_simple"
+description "Simple POP3 Example"
+copyright   "Copyright © 2015, Anton Dutov"
+authors     "Anton Dutov"
+
+dependency "mail" version="~master" path="../../"
+
