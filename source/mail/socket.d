@@ -10,8 +10,8 @@ import deimos.openssl.ssl;
 enum EncryptionMethod : uint
 {
 	None,    // No encryption is used
-	SSLv23,  // SSL version 3 but rollback to 2
-	SSLv3,   // SSL version 3 encryption
+//	SSLv23,  // SSL version 3 but rollback to 2
+//	SSLv3,   // SSL version 3 encryption
 	TLSv1,   // TLS version 1 encryption
 	TLSv1_1, // TLS version 1.1 encryption
 	TLSv1_2, // TLS version 1.2 encryption
@@ -103,12 +103,12 @@ public:
 
 		final switch (encMethod)
 		{
-			case EncryptionMethod.SSLv23:
-				_sslMethod = cast(SSL_METHOD*) SSLv23_client_method();
-				break;
-			case EncryptionMethod.SSLv3:
-				_sslMethod = cast(SSL_METHOD*) SSLv3_client_method();
-				break;
+//			case EncryptionMethod.SSLv23:
+//				_sslMethod = cast(SSL_METHOD*) SSLv23_client_method();
+//				break;
+//			case EncryptionMethod.SSLv3:
+//				_sslMethod = cast(SSL_METHOD*) SSLv3_client_method();
+//				break;
 			case EncryptionMethod.TLSv1:
 				_sslMethod = cast(SSL_METHOD*) TLSv1_client_method();
 				break;
