@@ -219,7 +219,7 @@ private:
 	{
 		if (!_sock.isOpen)
 			return SmtpReply(false);
-		_sock.send(command ~ "\n");
+		_sock.send(command ~ "\r\n");
 		return parseReply(receiveAll);
 	}
 
