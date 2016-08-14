@@ -2,6 +2,6 @@ name        "mail"
 description "Synchronous POP3/SMTP Library"
 copyright   "Copyright © 2015, Anton Dutov"
 authors     "Anton Dutov" "Rostyslav Dzinko"
-license     "MIT"
+license     "PUBLIC DOMAIN"
 
 dependency  "openssl" version=">=0.9.8"
