@@ -131,8 +131,10 @@ public:
 		if (_ssl is null)
 			return false;
 
-
-		SSL_set_fd(_ssl, _sock.handle);
+		version(Win64)
+				SSL_set_fd(_ssl, cast(int)_sock.handle);
+		else
+				SSL_set_fd(_ssl, _sock.handle);
 
 		// Handshake
 		if (SSL_connect(_ssl) != 1)
