@@ -1,0 +1,8 @@
+pipeline:
+  build:
+    image: dutov/dmd
+    commands:
+      - dub clean-caches
+      - dub upgrade
+      - dub test
+
