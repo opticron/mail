@@ -7,6 +7,8 @@ import std.conv;
 import std.string;
 import std.encoding;
 import std.uri;
+import std.exception;
+import std.typecons;
 
 import mail.msg;
 import mail.socket;
@@ -118,7 +120,7 @@ class Pop3
 		return query("RETR " ~ id.to!string, true);
 	}
 
-	Msg retrMsg(ulong id, bool cononize = true)
+	Msg retrMsg(ulong id, bool canonize = true)
 	{
 		Msg m;
 		_sock.send("RETR " ~ id.to!string ~ "\n");
@@ -126,7 +128,7 @@ class Pop3
 		if (_lastCode == "+OK")
 		{
 			auto mData = _lastData.findSplit("\n")[2].strip;
-			if (cononize)
+			if (canonize)
 			{
 				mData = mData.replace("\n..", "\n.");
 			}
@@ -134,6 +136,27 @@ class Pop3
 			m = Msg.parse(cast(ubyte[]) mData);
 		}
 		return m;
+	}
+
+	Headers getHeaders(ulong id) {
+		_sock.send("TOP " ~ id.to!string ~ " 0\n");
+		parseReply(true);
+		
+		auto mData = _lastData.findSplit("\n")[2].strip;
+		mData = mData.replace("\n..", "\n.");
+		
+		Msg m = Msg.parse(cast(ubyte[]) mData);
+		return m.headers;		
+	}
+
+	Tuple!(ulong, string)[] getUIDLs() {
+		import std.array : array;
+		query("UIDL", true);
+		if (_lastCode != "+OK") return [];
+		return _lastData.split("\r\n").filter!(s => s.length > 2).map!((s) {
+			auto a = s.split(" ");
+			return tuple(a[0].to!ulong, a[1]); 
+		}).array;
 	}
 
 	Pop3Reply dele(ulong id)
@@ -149,7 +172,7 @@ class Pop3
 private:
 	void parseReply(bool multiline = false)
 	{
-		auto tmp = recvAll(multiline).findSplit(" ");
+		auto tmp = recvAll(multiline).findSplit(multiline ? "\r\n" : " ");
 		_lastCode = tmp[0];
 		_lastData = tmp[2];
 	}

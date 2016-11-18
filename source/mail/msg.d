@@ -97,6 +97,7 @@ struct Msg
 		auto ct   = m.headers.all("content-type").length ? m.headers["content-type"] : ""; 
 		auto enc  = m.headers.all("content-transfer-encoding").length ? m.headers["content-transfer-encoding"].toLower : "";
 
+		if ((cast(string)data).strip.empty) return m;
 		//	Transfer encoding
 		switch(enc)
 		{
