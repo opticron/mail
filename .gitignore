@@ -1,0 +1,17 @@
+_*
+~*
+.*
+*.id
+*.sign
+*.a
+*.o
+*.obj
+*.deb
+*.json
+*.user
+*.log
+core
+
+old/
+build/
+tmp/

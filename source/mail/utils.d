@@ -2,7 +2,10 @@ module mail.utils;
 
 import std.algorithm;
 import std.conv:   to;
-import std.string: toUpper, toStringz;
+import std.string;
+import std.datetime;
+
+enum months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 extern (C) pure nothrow
 {
@@ -113,4 +116,58 @@ ubyte[] removeAll(ubyte[] src, ubyte val)
 		}
 	} while(i >= 0);
 	return dst;
+}
+
+SysTime parseDate(in string src, in SysTime fail = Clock.currTime)
+{
+	DateTime dt;
+	auto tz = new immutable SimpleTimeZone(0.minutes);
+
+	scope(failure)
+	{
+		return fail;
+	}
+
+	auto l = src.findSplitAfter(",")[1].strip().toUpper; 
+
+	dt.day   = l[0 .. 2].to!int;
+	dt.month = cast(Month) (months.countUntil(l[3 .. 6]) + 1);
+	dt.year  = l[7 .. 11].to!int;
+	dt.hour  = l[12 .. 14].to!int;
+	dt.minute = l[15 .. 17].to!int;
+	dt.second = l[18 .. 20].to!int;
+	int z = 0;
+
+	if (l.length > 21)
+	{
+		auto tmp = l[21 .. $];
+
+		switch(tmp)
+		{
+			case "UT", "UTC", "GMT":
+				break;
+			default:
+				auto sign = +1;
+				if (tmp[0] == '-')
+				{
+					sign = -1;
+				}
+
+				if (tmp[0] == '-' || tmp[0] == '+')
+				{
+					tmp = tmp[1 .. $];
+				}
+
+				if (tmp.length == 4)
+				{
+					auto tzH = tmp[0 .. 2].to!int;
+					auto tzM = tmp[2 .. 4].to!int;
+
+					return SysTime(dt, new immutable SimpleTimeZone(((tzH * 60 + tzM) * sign).minutes));
+				}
+				break;
+		} 
+	}
+
+    return SysTime(dt, tz);
 }
