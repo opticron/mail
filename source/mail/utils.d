@@ -131,6 +131,8 @@ ubyte[] removeAll(ubyte[] src, ubyte val)
 
 SysTime parseDate(in string src, in SysTime fail = Clock.currTime)
 {
+    import std.ascii : isDigit;
+
     DateTime dt;
     auto tz = new immutable SimpleTimeZone(0.minutes);
 
@@ -141,17 +143,22 @@ SysTime parseDate(in string src, in SysTime fail = Clock.currTime)
 
     auto l = src.findSplitAfter(",")[1].strip().toUpper;
 
-    dt.day = l[0 .. 2].to!int;
-    dt.month = cast(Month)(months.countUntil(l[3 .. 6]) + 1);
-    dt.year = l[7 .. 11].to!int;
-    dt.hour = l[12 .. 14].to!int;
-    dt.minute = l[15 .. 17].to!int;
-    dt.second = l[18 .. 20].to!int;
+    uint x = l[1].isDigit ? 2 : 1;
+
+    dt.day = l[0 .. x].to!int;
+
+    l = l[++x .. $];
+
+    dt.month  = cast(Month)(months.countUntil(l[0 .. 3]) + 1);
+    dt.year   = l[ 4 .. 8].to!int;
+    dt.hour   = l[ 9 .. 11].to!int;
+    dt.minute = l[12 .. 14].to!int;
+    dt.second = l[15 .. 17].to!int;
     int z = 0;
 
-    if (l.length > 21)
+    if (l.length > 18)
     {
-        auto tmp = l[21 .. $];
+        auto tmp = l[18 .. $];
 
         switch (tmp)
         {
@@ -181,4 +188,12 @@ SysTime parseDate(in string src, in SysTime fail = Clock.currTime)
     }
 
     return SysTime(dt, tz);
+}
+///
+unittest
+{
+    assert(parseDate("8 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-08T15:21:13+00:00");
+    assert(parseDate("8 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-08T15:21:13+00:00");
+    assert(parseDate("18 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-18T15:21:13+00:00");
+    assert(parseDate("18 Feb 2017 15:21:13 +0530").toISOExtString == "2017-02-18T15:21:13+05:30");
 }
