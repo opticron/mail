@@ -81,9 +81,7 @@ public:
                 return _open = true;
             }
         }
-        catch
-        {
-        }
+        catch (Throwable) {}
         return false;
     }
 

@@ -193,7 +193,7 @@ SysTime parseDate(in string src, in SysTime fail = Clock.currTime)
 unittest
 {
     assert(parseDate("8 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-08T15:21:13+00:00");
-    assert(parseDate("8 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-08T15:21:13+00:00");
+    assert(parseDate("8 Feb 2017 15:21:13 +0530").toISOExtString == "2017-02-08T15:21:13+05:30");
     assert(parseDate("18 Feb 2017 15:21:13 +0000").toISOExtString == "2017-02-18T15:21:13+00:00");
     assert(parseDate("18 Feb 2017 15:21:13 +0530").toISOExtString == "2017-02-18T15:21:13+05:30");
 }
