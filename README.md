@@ -1,3 +1,6 @@
+# Unmaintained
+
+
 # Mail
 Mail is a synchronous POP3/SMTP library for [D programming language](https://dlang.org). It is available as a package in the [dub registry
 ](https://code.dlang.org/packages/mail)
