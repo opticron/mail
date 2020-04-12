@@ -62,7 +62,6 @@ public:
     {
         _host = host;
         _port = port;
-        _sock = new TcpSocket();
     }
 
     ~this()
@@ -77,6 +76,12 @@ public:
             auto ai = getAddress(_host, _port);
             if (ai.length)
             {
+                if (_sock !is null)
+                {
+                    delete _sock;
+                    _sock = null;
+                }
+                _sock = new TcpSocket(ai[0].addressFamily);
                 _sock.connect(ai[0]);
                 return _open = true;
             }
@@ -98,6 +103,11 @@ public:
     bool SSLbegin(EncryptionMethod encMethod = EncryptionMethod.TLSv1_2)
     {
         import std.stdio;
+
+        if (_sock is null)
+        {
+            return false;
+        }
 
         // Init
         OPENSSL_config("");
@@ -191,6 +201,11 @@ public:
 
     bool send(string data)
     {
+        if (_sock is null)
+        {
+            return false;
+        }
+
         if (_secure)
         {
             return SSL_write(_ssl, data.ptr, data.length.to!int) >= 0;
@@ -201,6 +216,12 @@ public:
     string receive()
     {
         int len;
+        if (_sock is null)
+        {
+            // throw exception?
+            return "";
+        }
+
         if (_secure)
         {
             len = SSL_read(_ssl, _buff.ptr, _buff.length);
